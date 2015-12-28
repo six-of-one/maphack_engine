@@ -14,10 +14,10 @@ FILETYPE VFT_APP
 			 VALUE "CompanyName", "Forest Hale Digital Services"
 			 VALUE "FileVersion", "1.0"
 			 VALUE "FileDescription", "DarkPlaces Game Engine"
-			 VALUE "InternalName", "darkplaces.exe"
+			 VALUE "InternalName", "maphack.exe"
 			 VALUE "LegalCopyright", "id Software, Forest Hale, and contributors"
 			 VALUE "LegalTrademarks", ""
-			 VALUE "OriginalFilename", "darkplaces.exe"
+			 VALUE "OriginalFilename", "maphack.exe"
 			 VALUE "ProductName", "DarkPlaces"
 			 VALUE "ProductVersion", "1.0"
 		 }

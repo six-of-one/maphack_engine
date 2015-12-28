@@ -1439,12 +1439,14 @@ typedef struct gamemode_info_s
 	const char* gameuserdirname; // not null
 } gamemode_info_t;
 
+// Cataboligne - Maphack port - 015.12.28: renaming, left userdir so I dont have to reconfigure all my developement tools
+
 static const gamemode_info_t gamemode_info [GAME_COUNT] =
 {// game				basegame				prog_name			cmdline				gamename				basegame	modgame			screenshot		userdir				   // commandline option
-{ GAME_NORMAL,			GAME_NORMAL,			"",					"-quake",			"DarkPlaces-Quake",		"id1",		NULL,			"dp",			"darkplaces"		}, // COMMANDLINEOPTION: Game: -quake runs the game Quake (default)
-{ GAME_HIPNOTIC,		GAME_NORMAL,			"hipnotic",			"-hipnotic",		"Darkplaces-Hipnotic",	"id1",		"hipnotic",		"dp",			"darkplaces"		}, // COMMANDLINEOPTION: Game: -hipnotic runs Quake mission pack 1: The Scourge of Armagon
-{ GAME_ROGUE,			GAME_NORMAL,			"rogue",			"-rogue",			"Darkplaces-Rogue",		"id1",		"rogue",		"dp",			"darkplaces"		}, // COMMANDLINEOPTION: Game: -rogue runs Quake mission pack 2: The Dissolution of Eternity
-{ GAME_NEHAHRA,			GAME_NORMAL,			"nehahra",			"-nehahra",			"DarkPlaces-Nehahra",	"id1",		"nehahra",		"dp",			"darkplaces"		}, // COMMANDLINEOPTION: Game: -nehahra runs The Seal of Nehahra movie and game
+{ GAME_NORMAL,			GAME_NORMAL,			"",					"-quake",			"MapHack-Quake",		"id1",		NULL,			"mh_",			"darkplaces"		}, // COMMANDLINEOPTION: Game: -quake runs the game Quake (default)
+{ GAME_HIPNOTIC,		GAME_NORMAL,			"hipnotic",			"-hipnotic",		"MapHack-Hipnotic",	"id1",		"hipnotic",		"mh_",			"darkplaces"		}, // COMMANDLINEOPTION: Game: -hipnotic runs Quake mission pack 1: The Scourge of Armagon
+{ GAME_ROGUE,			GAME_NORMAL,			"rogue",			"-rogue",			"MapHack-Rogue",		"id1",		"rogue",		"mh_",			"darkplaces"		}, // COMMANDLINEOPTION: Game: -rogue runs Quake mission pack 2: The Dissolution of Eternity
+{ GAME_NEHAHRA,			GAME_NORMAL,			"nehahra",			"-nehahra",			"MapHack-Nehahra",	"id1",		"nehahra",		"mh_",			"darkplaces"		}, // COMMANDLINEOPTION: Game: -nehahra runs The Seal of Nehahra movie and game
 { GAME_NEXUIZ,			GAME_NEXUIZ,			"nexuiz",			"-nexuiz",			"Nexuiz",				"data",		NULL,			"nexuiz",		"nexuiz"			}, // COMMANDLINEOPTION: Game: -nexuiz runs the multiplayer game Nexuiz
 { GAME_XONOTIC,			GAME_XONOTIC,			"xonotic",			"-xonotic",			"Xonotic",				"data",		NULL,			"xonotic",		"xonotic"			}, // COMMANDLINEOPTION: Game: -xonotic runs the multiplayer game Xonotic
 { GAME_TRANSFUSION,		GAME_TRANSFUSION,		"transfusion",		"-transfusion",		"Transfusion",			"basetf",	NULL,			"transfusion",	"transfusion"		}, // COMMANDLINEOPTION: Game: -transfusion runs Transfusion (the recreation of Blood in Quake)
@@ -1454,10 +1456,10 @@ static const gamemode_info_t gamemode_info [GAME_COUNT] =
 { GAME_ZYMOTIC,			GAME_ZYMOTIC,			"zymotic",			"-zymotic",			"Zymotic",				"basezym",	NULL,			"zymotic",		"zymotic"			}, // COMMANDLINEOPTION: Game: -zymotic runs the singleplayer game Zymotic
 { GAME_SETHERAL,		GAME_SETHERAL,			"setheral",			"-setheral",		"Setheral",				"data",		NULL,			"setheral",		"setheral"			}, // COMMANDLINEOPTION: Game: -setheral runs the multiplayer game Setheral
 { GAME_SOM,				GAME_NORMAL,			"som",				"-som",				"Son of Man",			"id1",		"sonofman",		"som",			"darkplaces"		}, // COMMANDLINEOPTION: Game: -som runs the multiplayer game Son Of Man
-{ GAME_TENEBRAE,		GAME_NORMAL,			"tenebrae",			"-tenebrae",		"DarkPlaces-Tenebrae",	"id1",		"tenebrae",		"dp",			"darkplaces"		}, // COMMANDLINEOPTION: Game: -tenebrae runs the graphics test mod known as Tenebrae (some features not implemented)
+{ GAME_TENEBRAE,		GAME_NORMAL,			"tenebrae",			"-tenebrae",		"MapHack-Tenebrae",	"id1",		"tenebrae",		"mh_",			"darkplaces"		}, // COMMANDLINEOPTION: Game: -tenebrae runs the graphics test mod known as Tenebrae (some features not implemented)
 { GAME_NEOTERIC,		GAME_NORMAL,			"neoteric",			"-neoteric",		"Neoteric",				"id1",		"neobase",		"neo",			"darkplaces"		}, // COMMANDLINEOPTION: Game: -neoteric runs the game Neoteric
-{ GAME_OPENQUARTZ,		GAME_NORMAL,			"openquartz",		"-openquartz",		"OpenQuartz",			"id1",		NULL,			"openquartz",	"darkplaces"		}, // COMMANDLINEOPTION: Game: -openquartz runs the game OpenQuartz, a standalone GPL replacement of the quake content
-{ GAME_PRYDON,			GAME_NORMAL,			"prydon",			"-prydon",			"PrydonGate",			"id1",		"prydon",		"prydon",		"darkplaces"		}, // COMMANDLINEOPTION: Game: -prydon runs the topdown point and click action-RPG Prydon Gate
+{ GAME_OPENQUARTZ,		GAME_NORMAL,			"openquartz",		"-openquartz",		"MapHack-OpenQuartz",			"id1",		NULL,			"openquartz",	"darkplaces"		}, // COMMANDLINEOPTION: Game: -openquartz runs the game OpenQuartz, a standalone GPL replacement of the quake content
+{ GAME_PRYDON,			GAME_NORMAL,			"prydon",			"-prydon",			"MapHack-PrydonGate",			"id1",		"prydon",		"prydon",		"darkplaces"		}, // COMMANDLINEOPTION: Game: -prydon runs the topdown point and click action-RPG Prydon Gate
 { GAME_DELUXEQUAKE,		GAME_DELUXEQUAKE,		"dq",				"-dq",				"Deluxe Quake",			"basedq",	"extradq",		"basedq",		"dq"				}, // COMMANDLINEOPTION: Game: -dq runs the game Deluxe Quake
 { GAME_THEHUNTED,		GAME_THEHUNTED,			"thehunted",		"-thehunted",		"The Hunted",			"thdata",	NULL, 			"th",			"thehunted"			}, // COMMANDLINEOPTION: Game: -thehunted runs the game The Hunted
 { GAME_DEFEATINDETAIL2,	GAME_DEFEATINDETAIL2,	"did2",				"-did2",			"Defeat In Detail 2",	"data",		NULL, 			"did2_",		"did2"				}, // COMMANDLINEOPTION: Game: -did2 runs the game Defeat In Detail 2

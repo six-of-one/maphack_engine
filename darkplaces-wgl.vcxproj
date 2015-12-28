@@ -144,7 +144,7 @@
       <DisableSpecificWarnings>4706;4127;4100;4055;4054;4244;4305;4702;4201;4611;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <OutputFile>$(SolutionDir)darkplaces.exe</OutputFile>
+      <OutputFile>$(SolutionDir)maphack.exe</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -169,7 +169,7 @@
       <DisableSpecificWarnings>4706;4127;4100;4055;4054;4244;4305;4702;4201;4611;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <OutputFile>$(SolutionDir)darkplaces.exe</OutputFile>
+      <OutputFile>$(SolutionDir)maphack.exe</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
