@@ -20,18 +20,18 @@
 
 * Release
 
-0.6 - not released
+0.6.1 - no general release yet, available in git repository
 
 ---------------------------------------------------------------------------
 
-readme.txt update: 12.22.14
+README update: 015.12.28
 ---------------------------------------------------------------------------
 
 
 Other notes:
 
-Darkplaces engine port as titled.
-Will be released when port work and source cleanup is completed
+Maphack engine (darkplaces port - thanks LordHavoc!)
+Full release when port work and source cleanup is completed
 
 Engine mods:
 
@@ -39,10 +39,12 @@ Engine mods:
 // Number Six - 015.12.5 - ent_load extension for map_hack - load *.bsp and *.ent file entites, handle map model brush sets - engine side fn call
 // #101 void(string s) ent_load -Cataboligne - load ents on to map from: *bsp, *ent files
 // Number Six - 015.12.5 - mod to display sub models of any model
+// Number Six - 015.12.28 - brand update
 
 ---------------------------------------------------------------------------
 
-This is _beta_ code - it might still contain bugs.
+This is nominally _beta_ code - mods might contain bugs.
+* no claim made for bugs in rest of engine code *
 
 ---------------------------------------------------------------------------
                     Maphack
