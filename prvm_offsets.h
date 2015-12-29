@@ -810,3 +810,10 @@ PRVM_DECLARE_serverglobalvector(trace_plane_normal)
 PRVM_DECLARE_serverglobalvector(v_forward)
 PRVM_DECLARE_serverglobalvector(v_right)
 PRVM_DECLARE_serverglobalvector(v_up)
+
+//
+// Cataboligne - 015.12.28 - hide ents from player beyond sv_hide distance
+// measured by func_maphack think - when player is beyond hack test distance, the distance is put in this field
+PRVM_DECLARE_clientfieldfloat(hack_pdist)
+PRVM_DECLARE_field(hack_pdist)
+PRVM_DECLARE_serverfieldfloat(hack_pdist)

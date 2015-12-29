@@ -191,6 +191,9 @@ cvar_t sv_autodemo_perclient_discardable = {CVAR_SAVE, "sv_autodemo_perclient_di
 
 cvar_t halflifebsp = {0, "halflifebsp", "0", "indicates the current map is hlbsp format (useful to know because of different bounding box sizes)"};
 
+// Cataboligne - 015.12.28 - hide ents from player beyond sv_hide distance
+cvar_t sv_hide = {0, "sv_hide", "0", "distance from a player beyond which hacks & owned ents should not be visible"};
+
 server_t sv;
 server_static_t svs;
 
@@ -593,6 +596,9 @@ void SV_Init (void)
 	Cvar_RegisterVariable (&sv_autodemo_perclient_discardable);
 
 	Cvar_RegisterVariable (&halflifebsp);
+
+// Cataboligne - 015.12.28 - hide ents from player beyond sv_hide distance
+	Cvar_RegisterVariable (&sv_hide);
 
 	sv_mempool = Mem_AllocPool("server", 0, NULL);
 }
@@ -1122,6 +1128,7 @@ static qboolean SV_PrepareEntityForSending (prvm_edict_t *ent, entity_state_t *c
 	unsigned int modelindex, effects, flags, glowsize, lightstyle, lightpflags, light[4], specialvisibilityradius;
 	unsigned int customizeentityforclient;
 	unsigned int sendentity;
+	int hpdist;			// Cataboligne - 015.12.28 - hide ents from player beyond sv_hide distance
 	float f;
 	float *v;
 	vec3_t cullmins, cullmaxs;
@@ -1137,6 +1144,17 @@ static qboolean SV_PrepareEntityForSending (prvm_edict_t *ent, entity_state_t *c
 	// (we really don't want to send those)
 	if (!(VectorLength2(PRVM_serveredictvector(ent, origin)) < 2000000000.0*2000000000.0))
 		return false;
+
+
+	// Cataboligne - 015.12.28 - hide ents from player beyond sv_hide distance
+
+	// qc calculated distance to player 
+	// should only be set when player is beyond view distance - both r_farclip_base and size of hack in question
+	hpdist = (unsigned)PRVM_serveredictfloat(ent, hack_pdist);
+	if ((hpdist > sv_hide.integer) && (sv_hide.integer > 0))
+		return false;
+	// Cataboligne - 015.12.28 - end hide ents
+
 
 	// EF_NODRAW prevents sending for any reason except for your own
 	// client, so we must keep all clients in this superset
