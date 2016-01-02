@@ -1146,7 +1146,7 @@ static qboolean SV_PrepareEntityForSending (prvm_edict_t *ent, entity_state_t *c
 		return false;
 
 
-	// Cataboligne - 015.12.28 - hide ents from player beyond sv_hide distance
+	/// Cataboligne - 015.12.28 - hide ents from player beyond sv_hide distance
 
 	// qc calculated distance to player 
 	// should only be set when player is beyond view distance - both r_farclip_base and size of hack in question
