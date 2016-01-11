@@ -304,6 +304,7 @@ loads any map entities found in the supplied filenme
 =================
 */
 
+//#ifdef map_hack
 static void ent_load(const char *fname)
 {
 	unsigned short sv_self;
@@ -346,6 +347,7 @@ void VM_ent_load (void)
 	VM_VarString(0, string, sizeof(string));
 	ent_load(string);
 }
+//#endif
 
 /*
 =================

@@ -647,6 +647,7 @@ static void Mod_Print(void)
 
 // Cataboligne - 015.12.5 - ent_load extension for map_hack - load *.bsp and *.ent file entites - if developer >= 2 display sv.model array contents
 
+//#ifdef map_hack
 	if (developer.integer > 1)
 	{
 		Con_Printf("sv.model list\n");
@@ -658,6 +659,7 @@ static void Mod_Print(void)
 //				Con_Printf(" empty slot -> %3i\n", i);
 		}
 	}
+//#endif
 
 // Cataboligne - 015.12.5 - mod to display sub models of any model
 
@@ -669,10 +671,12 @@ static void Mod_Print(void)
 			if (mod->brush.numsubmodels > 1)
 			{
 				Con_Printf("%4iK %6i crc %s (%i submodels)\n", mod->mempool ? (int)((mod->mempool->totalsize + 1023) / 1024) : 0, mod->crc,  mod->name, mod->brush.numsubmodels);
+//#ifdef map_hack
 				Con_Printf("------  submodels:\n");
 				for (k = 1;k < mod->brush.numsubmodels && k+1 < MAX_MODELS;k++)
 					Con_Printf("%4iK %6i crc %s\n", mod->brush.submodels[k]->mempool ? (int)((mod->brush.submodels[k]->mempool->totalsize + 1023) / 1024) : 0, mod->brush.submodels[k]->crc, mod->brush.submodels[k]->name);
 				Con_Printf("------\n");
+//#endif
 			}
 			else
 				Con_Printf("%4iK %6i crc %s\n", mod->mempool ? (int)((mod->mempool->totalsize + 1023) / 1024) : 0, mod->crc, mod->name);

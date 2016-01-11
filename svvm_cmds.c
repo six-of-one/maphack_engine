@@ -1334,7 +1334,9 @@ sizebuf_t *WriteDest (void)
 	int		entnum;
 	int		dest;
 	prvm_edict_t	*ent;
-
+//#ifdef bot_code
+	int _human;			// Cataboligne - 016.1.10 - dont send messages to non humans, it stuffs the buffers
+//#endif
 	dest = (int)PRVM_G_FLOAT(OFS_PARM0);
 	switch (dest)
 	{
@@ -1344,6 +1346,16 @@ sizebuf_t *WriteDest (void)
 	case MSG_ONE:
 		ent = PRVM_PROG_TO_EDICT(PRVM_serverglobaledict(msg_entity));
 		entnum = PRVM_NUM_FOR_EDICT(ent);
+//#ifdef bot_code
+	_human = (unsigned)PRVM_serveredictfloat(ent, ishuman);
+
+	if (! _human) 
+	{
+									if (developer.integer > 1) Con_Printf("* WriteDest - blocked sending to a non-human [ %i ] \n", entnum);
+		return &sv.reliable_datagram;
+	}
+//#endif
+
 		if (entnum < 1 || entnum > svs.maxclients || !svs.clients[entnum-1].active || !svs.clients[entnum-1].netconnection)
 		{
 			VM_Warning ("WriteDest: tried to write to non-client\n");
@@ -3223,7 +3235,9 @@ VM_findfloat,					// #98 entity(entity start, .float fld, float match) findfloat
 VM_checkextension,				// #99 float(string s) checkextension (the basis of the extension system)
 // FrikaC and Telejano range  #100-#199
 NULL,							// #100
+//#ifdef map_hack
 VM_ent_load,							// #101 void(string s) ent_load -Cataboligne - load ents on to map from: *bsp, *ent files
+//#endif
 NULL,							// #102
 NULL,							// #103
 NULL,							// #104

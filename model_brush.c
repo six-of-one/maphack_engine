@@ -3853,6 +3853,7 @@ void Mod_Q1BSP_Load(dp_model_t *mod, void *buffer, void *bufferend)
 			loadmodel->brush.submodels[i] = mod;
 
 // Cataboligne - ent_load extension for map_hack - load *.bsp and *.ent file entites, handle map model brush sets - put submodels in modelindex arrays
+//#ifdef map_hack
 											if (developer.integer > 1) Con_Printf("* q1bsp load - submodel [ %i ] n - %s\n", i,  mod->brush.submodels[i]->name);
 
 // logic - only store *n submodels that are not part of the world entity - world *n are already stored
@@ -3877,6 +3878,7 @@ void Mod_Q1BSP_Load(dp_model_t *mod, void *buffer, void *bufferend)
 
 											if (developer.integer > 1) Con_Printf("* ent load - sv.models[ %i ] store - %s  prec- %s\n", m_submodels, sv.models[m_submodels]->name,sv.model_precache[m_submodels]);
 		}
+//#endif
 // Cataboligne - ent_load done
 
 		bm = &mod->brushq1.submodels[i];

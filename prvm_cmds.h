@@ -217,7 +217,9 @@ void VM_CheckEmptyString (const char *s);
 void VM_VarString(int first, char *out, int outlength);
 
 // Cataboligne - ent_load extension for map_hack - load *.bsp and *.ent file entites, handle map model brush sets - engine side fn call
+//#ifdef map_hack
 void VM_ent_load(void);
+//#endif
 
 void VM_checkextension (void);
 void VM_error (void);

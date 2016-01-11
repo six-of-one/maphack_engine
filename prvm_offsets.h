@@ -814,6 +814,21 @@ PRVM_DECLARE_serverglobalvector(v_up)
 //
 // Cataboligne - 015.12.28 - hide ents from player beyond sv_hide distance
 // measured by func_maphack think - when player is beyond hack test distance, the distance is put in this field
+
+// not using for now - compile wasnt consistent, this needs moved to another .h
+#define map_hack
+#define bot_code
+
+//#ifdef map_hack
 PRVM_DECLARE_clientfieldfloat(hack_pdist)
 PRVM_DECLARE_field(hack_pdist)
 PRVM_DECLARE_serverfieldfloat(hack_pdist)
+//#endif
+
+// Cataboligne - 016.1.10 - support bot code - dont do certain things if .ishuman == 0
+
+//#ifdef bot_code
+PRVM_DECLARE_clientfieldfloat(ishuman)
+PRVM_DECLARE_field(ishuman)
+PRVM_DECLARE_serverfieldfloat(ishuman)
+//#endif
