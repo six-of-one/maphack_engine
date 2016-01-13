@@ -221,6 +221,10 @@ void VM_VarString(int first, char *out, int outlength);
 void VM_ent_load(void);
 //#endif
 
+// Cataboligne - 016.1.13 - block out some previous errors and issue a warning instead - mostly connected to qc related fail
+extern cvar_t sv_prvm_warn;
+
+
 void VM_checkextension (void);
 void VM_error (void);
 void VM_objerror (void);

@@ -195,6 +195,8 @@ cvar_t halflifebsp = {0, "halflifebsp", "0", "indicates the current map is hlbsp
 //#ifdef map_hack
 cvar_t sv_hide = {0, "sv_hide", "0", "distance from a player beyond which hacks & owned ents should not be visible"};
 //#endif
+// Cataboligne - 016.1.13 - block out some previous errors and issue a warning instead - mostly connected to qc related fail
+cvar_t sv_prvm_warn = {1, "sv_prvm_warn", "1", "convert select PRVM_ERROR into VM_Warning calls"};
 
 server_t sv;
 server_static_t svs;
@@ -603,6 +605,8 @@ void SV_Init (void)
 //#ifdef map_hack
 	Cvar_RegisterVariable (&sv_hide);
 //#endif
+// Cataboligne - 016.1.13 - block out some previous errors and issue a warning instead - mostly connected to qc related fail
+	Cvar_RegisterVariable (&sv_prvm_warn);
 
 	sv_mempool = Mem_AllocPool("server", 0, NULL);
 }

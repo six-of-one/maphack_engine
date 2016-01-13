@@ -6140,6 +6140,7 @@ VM_M_callfunction
 Extension: pass
 =========
 */
+
 mfunction_t *PRVM_ED_FindFunction (const char *name);
 void VM_callfunction(void)
 {
@@ -6155,7 +6156,12 @@ void VM_callfunction(void)
 	func = PRVM_ED_FindFunction(s);
 
 	if(!func)
-		PRVM_ERROR("VM_callfunciton: function %s not found !", s);
+	{
+		if (sv_prvm_warn.integer)
+			VM_Warning("VM_callfunciton: function %s not found !", s);
+		else
+			PRVM_ERROR("VM_callfunciton: function %s not found !", s);
+	}
 	else if (func->first_statement < 0)
 	{
 		// negative statements are built in functions
@@ -6164,7 +6170,12 @@ void VM_callfunction(void)
 		if (builtinnumber < prog->numbuiltins && prog->builtins[builtinnumber])
 			prog->builtins[builtinnumber]();
 		else
-			PRVM_ERROR("No such builtin #%i in %s; most likely cause: outdated engine build. Try updating!", builtinnumber, PRVM_NAME);
+		{
+			if (sv_prvm_warn.integer)
+				VM_Warning("No builtin #%i in %s; check builtin list.", builtinnumber, PRVM_NAME);
+			else
+				PRVM_ERROR("No such builtin #%i in %s; most likely cause: outdated engine build. Try updating!", builtinnumber, PRVM_NAME);
+		}
 	}
 	else if(func - prog->functions > 0)
 	{

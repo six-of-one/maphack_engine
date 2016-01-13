@@ -1351,7 +1351,8 @@ sizebuf_t *WriteDest (void)
 
 	if (! _human) 
 	{
-									if (developer.integer > 1) Con_Printf("* WriteDest - blocked sending to a non-human [ %i ] \n", entnum);
+//									if (developer.integer > 1)  // FIX: restore
+										Con_Printf("* WriteDest - blocked sending to a non-human [ %i ] \n", entnum);
 		return &sv.reliable_datagram;
 	}
 //#endif
