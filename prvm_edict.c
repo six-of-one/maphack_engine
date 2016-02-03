@@ -1465,9 +1465,12 @@ void PRVM_ED_LoadFromFile (const char *data)
 		{
 			if (!PRVM_alledictstring(ent, classname))
 			{
-				Con_Print("No classname for:\n");
-				PRVM_ED_Print(ent, NULL);
-				PRVM_ED_Free (ent);
+				if (developer.integer > 0) // Cataboligne - 016.1.31 - including this in non-dev errors
+				{
+					Con_Print("No classname for:\n");
+					PRVM_ED_Print(ent, NULL);
+					PRVM_ED_Free (ent);
+				}
 				continue;
 			}
 
