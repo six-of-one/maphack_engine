@@ -947,7 +947,7 @@ void Cvar_Del_f (void)
 		cvar = Cvar_FindVarLink(Cmd_Argv(i), &parent, &link, &prev);
 		if(!cvar)
 		{
-			Con_Printf("Del: %s is not defined\n", Cmd_Argv(i));
+			Con_DPrintf("Del: %s is not defined\n", Cmd_Argv(i));  // Cataboligne - changed to dev only
 			continue;
 		}
 		if(cvar->flags & CVAR_READONLY)
