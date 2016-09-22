@@ -467,7 +467,10 @@ static void Cmd_Exec(const char *filename)
 		Con_Printf("couldn't exec %s\n",filename);
 		return;
 	}
-	Con_Printf("execing %s\n",filename);
+	if (saved1.integer == 131072)			// Cataboligne - 016.9.3 - changed to dev only unless this
+		Con_Printf("execing %s\n",filename);
+	else
+		Con_DPrintf("execing %s\n",filename);
 
 	// if executing default.cfg for the first time, lock the cvar defaults
 	// it may seem backwards to insert this text BEFORE the default.cfg
@@ -941,9 +944,9 @@ static char asis[] = "asis"; // just to suppress const char warnings
 	if(!varstr)
 	{
 		if(alias)
-			Con_Printf("Warning: Could not expand $%s in alias %s\n", varname, alias->name);
+			Con_DPrintf("Warning: Could not expand $%s in alias %s\n", varname, alias->name);	// Cataboligne - 016.9.22 - changed to dev only
 		else
-			Con_Printf("Warning: Could not expand $%s\n", varname);
+			Con_DPrintf("Warning: Could not expand $%s\n", varname);				// Cataboligne - 016.9.22 - changed to dev only
 		return NULL;
 	}
 
