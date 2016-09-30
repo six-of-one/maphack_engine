@@ -11,7 +11,7 @@
     "$$##$##$$"         `'"#"'`                             '       `"'`"'
       `"Y#P"'
         |$|
-        `$'                    #      " Maphack "
+        `$'                          " Maphack "
          $
          *
 ---------------------------------------------------------------------------
@@ -24,22 +24,22 @@
 
 ---------------------------------------------------------------------------
 
-##README update: 015.12.28
+README update: 015.12.28
 ---------------------------------------------------------------------------
 
 
-#Other notes:
+Other notes:
 
 Maphack engine (darkplaces port - thanks LordHavoc!)
 Full release when port work and source cleanup is completed
 
-#Engine mods:
+Engine mods:
 
-- Number Six - 014.8.7 - always render a sky if there is even one little bit anywhwere on a map - for map hack system
-- Number Six - 015.12.5 - ent_load extension for map_hack - load *.bsp and *.ent file entites, handle map model brush sets - engine side fn call
-- #101 void(string s) ent_load -Cataboligne - load ents on to map from: *bsp, *ent files
-- Number Six - 015.12.5 - mod to display sub models of any model
-- Number Six - 015.12.28 - brand update
+// Number Six - 014.8.7   - always render a sky if there is even one little bit anywhwere on a map - for map hack system
+// Number Six - 015.12.5  - ent_load extension for map_hack - load *.bsp and *.ent file entites, handle map model brush sets - engine side fn call
+//                          #101 void(string s) ent_load -Cataboligne - load ents on to map from: *bsp, *ent files
+// Number Six - 015.12.5  - mod to display sub models of any model
+// Number Six - 015.12.28 - brand update
 
 ---------------------------------------------------------------------------
 
