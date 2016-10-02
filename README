@@ -24,7 +24,7 @@
 
 ---------------------------------------------------------------------------
 
-README update: 015.12.28
+README update: 016.10.2
 ---------------------------------------------------------------------------
 
 
@@ -38,8 +38,12 @@ Engine mods:
 // Number Six - 014.8.7   - always render a sky if there is even one little bit anywhwere on a map - for map hack system
 // Number Six - 015.12.5  - ent_load extension for map_hack - load *.bsp and *.ent file entites, handle map model brush sets - engine side fn call
 //                          #101 void(string s) ent_load -Cataboligne - load ents on to map from: *bsp, *ent files
-// Number Six - 015.12.5  - mod to display sub models of any model
+// Number Six - 015.12.5  - mod to display sub models of any model, when loading a *.bsp chunk as a map section
+// Number Six - 015.12.28 - hide ents from player beyond sv_hide distance
 // Number Six - 015.12.28 - brand update
+// Number Six - 016.1.13  - block out some previous errors and issue a warning instead - mostly connected to qc related fail
+
+GPL 2 - read LICENSE for details
 
 ---------------------------------------------------------------------------
 
