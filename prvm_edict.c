@@ -660,7 +660,6 @@ void PRVM_ED_Print(prvm_edict_t *ed, const char *wildcard_fieldname)
 	if (sent != same_ent)					// Cataboligne - 016.11.1 - search more than one field
 	{
 		dpsnprintf(tempstring, sizeof(tempstring), "\n%s EDICT %i:\n", PRVM_NAME, PRVM_NUM_FOR_EDICT(ed));
-		same_ent = sent;
 	}
 	for (i = 1;i < prog->numfielddefs;i++)
 	{
@@ -718,7 +717,10 @@ void PRVM_ED_Print(prvm_edict_t *ed, const char *wildcard_fieldname)
 	}
 	if (fnd || prvm_nosrchdisp.integer)			// Cataboligne - 016.11.1 - options for - ents with no search result
 	if (tempstring[0])
+	{
 		Con_Print(tempstring);
+		same_ent = sent;				// smtof
+	}
 }
 
 /*
@@ -813,20 +815,22 @@ void PRVM_ED_PrintEdicts_f (void)
 
 	Con_Printf("%s: %i entities\n", PRVM_NAME, prog->num_edicts);
 	for (i=0 ; i<prog->num_edicts ; i++)
-/*	{
+	{
+		PRVM_ED_PrintNum (i, wildcard_fieldname);
+
 		if (Cmd_Argc() > 3)						// smtof block
 		{
 			k = Cmd_Argc() - 1;
-			while (k > 1)
+			while (k > 2)
 			{
 				wildcard_fieldname = Cmd_Argv(k);
 				PRVM_ED_PrintNum (i, wildcard_fieldname);
 				k--;
 			}
-		}
-		else	*/							// smtof block end
-		PRVM_ED_PrintNum (i, wildcard_fieldname);
-//	}
+			wildcard_fieldname = Cmd_Argv(k);
+		}								// smtof block end
+	}
+	same_ent = -1;
 
 	PRVM_End;
 }
