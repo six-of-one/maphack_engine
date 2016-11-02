@@ -47,6 +47,11 @@ cvar_t prvm_errordump = {0, "prvm_errordump", "0", "write a savegame on crash to
 cvar_t prvm_reuseedicts_startuptime = {0, "prvm_reuseedicts_startuptime", "2", "allows immediate re-use of freed entity slots during start of new level (value in seconds)"};
 cvar_t prvm_reuseedicts_neverinsameframe = {0, "prvm_reuseedicts_neverinsameframe", "1", "never allows re-use of freed entity slots during same frame"};
 
+// Cataboligne - 016.11.1 - options for - FREE ents & ents with no search result
+cvar_t prvm_nofreedisp = {0, "prvm_nofreedisp", "0", "when set to: 0 - do not display FREE ents, 1 - display in search list"};
+cvar_t prvm_nosrchdisp = {0, "prvm_nosrchdisp", "0", "when set to: 0 - display no search result ents, 1 - display in search list"};
+int	same_ent;  // Cataboligne - 016.11.1 - search more than one field
+
 static double prvm_reuseedicts_always_allow = 0;
 qboolean prvm_runawaycheck = true;
 
@@ -639,14 +644,24 @@ void PRVM_ED_Print(prvm_edict_t *ed, const char *wildcard_fieldname)
 	int		type;
 	char	tempstring[MAX_INPUTLINE], tempstring2[260]; // temporary string buffers
 
+	int		fnd, sent;				// Cataboligne - 016.11.1 - options for - ents with no search result
+
 	if (ed->priv.required->free)
 	{
+		if (prvm_nofreedisp.integer)			// Cataboligne - 016.11.1 - options for - FREE ents
 		Con_Printf("%s: FREE\n",PRVM_NAME);
 		return;
 	}
 
+	fnd = 0;						// Cataboligne - 016.11.1 - options for - ents with no search result
+	sent = PRVM_NUM_FOR_EDICT(ed);
+
 	tempstring[0] = 0;
-	dpsnprintf(tempstring, sizeof(tempstring), "\n%s EDICT %i:\n", PRVM_NAME, PRVM_NUM_FOR_EDICT(ed));
+	if (sent != same_ent)					// Cataboligne - 016.11.1 - search more than one field
+	{
+		dpsnprintf(tempstring, sizeof(tempstring), "\n%s EDICT %i:\n", PRVM_NAME, PRVM_NUM_FOR_EDICT(ed));
+		same_ent = sent;
+	}
 	for (i = 1;i < prog->numfielddefs;i++)
 	{
 		d = &prog->fielddefs[i];
@@ -657,6 +672,7 @@ void PRVM_ED_Print(prvm_edict_t *ed, const char *wildcard_fieldname)
 		// Check Field Name Wildcard
 		if(wildcard_fieldname)
 			if( !matchpattern(name, wildcard_fieldname, 1) )
+//			if( !matchpattern_with_separator(name, wildcard_fieldname, 1, ",|.", 0) )
 				// Didn't match; skip
 				continue;
 
@@ -671,6 +687,7 @@ void PRVM_ED_Print(prvm_edict_t *ed, const char *wildcard_fieldname)
 		if (j == prvm_type_size[type])
 			continue;
 
+		fnd = 1;					// Cataboligne - 016.11.1 - options for - ents with no search result
 		if (strlen(name) > sizeof(tempstring2)-4)
 		{
 			memcpy (tempstring2, name, sizeof(tempstring2)-4);
@@ -699,6 +716,7 @@ void PRVM_ED_Print(prvm_edict_t *ed, const char *wildcard_fieldname)
 			tempstring[0] = 0;
 		}
 	}
+	if (fnd || prvm_nosrchdisp.integer)			// Cataboligne - 016.11.1 - options for - ents with no search result
 	if (tempstring[0])
 		Con_Print(tempstring);
 }
@@ -770,12 +788,15 @@ PRVM_ED_PrintEdicts_f
 For debugging, prints all the entities in the current server
 =============
 */
+
+// smtof - Cataboligne - 016.11.1 - search more than one field
+
 void PRVM_ED_PrintEdicts_f (void)
 {
-	int		i;
+	int		i,k;
 	const char *wildcard_fieldname;
 
-	if(Cmd_Argc() < 2 || Cmd_Argc() > 3)
+	if(Cmd_Argc() < 2) // || Cmd_Argc() > 3)				// smtof
 	{
 		Con_Print("prvm_edicts <program name> <optional field name wildcard>\n");
 		return;
@@ -792,7 +813,20 @@ void PRVM_ED_PrintEdicts_f (void)
 
 	Con_Printf("%s: %i entities\n", PRVM_NAME, prog->num_edicts);
 	for (i=0 ; i<prog->num_edicts ; i++)
+/*	{
+		if (Cmd_Argc() > 3)						// smtof block
+		{
+			k = Cmd_Argc() - 1;
+			while (k > 1)
+			{
+				wildcard_fieldname = Cmd_Argv(k);
+				PRVM_ED_PrintNum (i, wildcard_fieldname);
+				k--;
+			}
+		}
+		else	*/							// smtof block end
 		PRVM_ED_PrintNum (i, wildcard_fieldname);
+//	}
 
 	PRVM_End;
 }
@@ -2683,6 +2717,11 @@ void PRVM_Init (void)
 	Cvar_RegisterVariable (&prvm_errordump);
 	Cvar_RegisterVariable (&prvm_reuseedicts_startuptime);
 	Cvar_RegisterVariable (&prvm_reuseedicts_neverinsameframe);
+
+// Cataboligne - 016.11.1 - options for - FREE ents & ents with no search result
+	Cvar_RegisterVariable (&prvm_nofreedisp);
+	Cvar_RegisterVariable (&prvm_nosrchdisp);
+
 
 // COMMANDLINEOPTION: PRVM: -norunaway disables the runaway loop check (it might be impossible to exit DarkPlaces if used!)
 	prvm_runawaycheck = !COM_CheckParm("-norunaway");
