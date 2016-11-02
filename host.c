@@ -1134,6 +1134,10 @@ static void Host_Init (void)
 	dpsnprintf (engineversion, sizeof (engineversion), "%s %s %s", gamename, os, buildstring);
 	Con_Printf("%s\n", engineversion);
 
+// Number Six - 016.10.2 - licensing compliance
+
+	Con_Printf("Maphack source code is licensed under GPL 2.0 (see git hub instructions in distro)\n");
+
 	// initialize ixtable
 	Mathlib_Init();
 
