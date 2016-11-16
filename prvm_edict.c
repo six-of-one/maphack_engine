@@ -48,6 +48,8 @@ cvar_t prvm_reuseedicts_startuptime = {0, "prvm_reuseedicts_startuptime", "2", "
 cvar_t prvm_reuseedicts_neverinsameframe = {0, "prvm_reuseedicts_neverinsameframe", "1", "never allows re-use of freed entity slots during same frame"};
 
 // Cataboligne - 016.11.1 - options for - FREE ents & ents with no search result
+cvar_t prvm_nulldisp = {0, "prvm_nulldisp", "0", "when set to: 0 - do not display default entries, 1 - display all fields"};
+cvar_t prvm_nostrdisp = {0, "prvm_nostrdisp", "SUB_Null()", "when set do not display {s} values, null - display all non default values"};
 cvar_t prvm_nofreedisp = {0, "prvm_nofreedisp", "0", "when set to: 0 - do not display FREE ents, 1 - display in search list"};
 cvar_t prvm_nosrchdisp = {0, "prvm_nosrchdisp", "0", "when set to: 0 - display no search result ents, 1 - display in search list"};
 cvar_t prvm_elshowxyz = {0, "prvm_elshowxyz", "0", "when set to: 0 - display no _x _y _z fields, 1 - display _x _y _z"};
@@ -731,6 +733,8 @@ void PRVM_ED_Print(prvm_edict_t *ed, const char *wildcard_fieldname)
 		for (j=0 ; j<prvm_type_size[type] ; j++)
 			if (v[j])
 				break;
+
+		if (!prvm_nulldisp.integer)
 		if (j == prvm_type_size[type])
 			continue;
 
@@ -748,6 +752,10 @@ void PRVM_ED_Print(prvm_edict_t *ed, const char *wildcard_fieldname)
 		strlcat(tempstring, " ", sizeof(tempstring));
 
 		name = PRVM_ValueString((etype_t)d->type, (prvm_eval_t *)v);
+
+		if ( !matchpattern(name, prvm_nostrdisp.string, 1) )	// Cataboligne - 016.11.16 - block one result in field data: intended for SUB_Null()
+			continue;
+
 		if (strlen(name) > sizeof(tempstring2)-4)
 		{
 			memcpy (tempstring2, name, sizeof(tempstring2)-4);
@@ -2772,6 +2780,8 @@ void PRVM_Init (void)
 	Cvar_RegisterVariable (&prvm_reuseedicts_neverinsameframe);
 
 // Cataboligne - 016.11.1 - options for - FREE ents & ents with no search result
+	Cvar_RegisterVariable (&prvm_nulldisp);
+	Cvar_RegisterVariable (&prvm_nostrdisp);
 	Cvar_RegisterVariable (&prvm_nofreedisp);
 	Cvar_RegisterVariable (&prvm_nosrchdisp);
 	Cvar_RegisterVariable (&prvm_elshowxyz);
