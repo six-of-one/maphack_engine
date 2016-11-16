@@ -644,6 +644,7 @@ void PRVM_ED_Print(prvm_edict_t *ed, const char *wildcard_fieldname)
 	int		*v;
 	int		i, j;
 	const char	*name;
+	const char	*ckname;				// Cataboligne - 016.11.16 - block one result in field data: intended for SUB_Null()
 	int		type;
 	char	tempstring[MAX_INPUTLINE], tempstring2[260]; // temporary string buffers
 
@@ -734,8 +735,12 @@ void PRVM_ED_Print(prvm_edict_t *ed, const char *wildcard_fieldname)
 			if (v[j])
 				break;
 
-		if (!prvm_nulldisp.integer)
+		if (!prvm_nulldisp.integer)			// Cataboligne - 016.11.16 - display fields with default data - if you want to make sure a field is defined
 		if (j == prvm_type_size[type])
+			continue;
+
+		ckname = PRVM_ValueString((etype_t)d->type, (prvm_eval_t *)v); // need to check before the copy happens prior to the assign below
+		if ( matchpattern(ckname, prvm_nostrdisp.string, 1) )	// Cataboligne - 016.11.16 - block one result in field data: intended for SUB_Null()
 			continue;
 
 		fnd = 1;					// Cataboligne - 016.11.1 - options for - ents with no search result
@@ -752,9 +757,6 @@ void PRVM_ED_Print(prvm_edict_t *ed, const char *wildcard_fieldname)
 		strlcat(tempstring, " ", sizeof(tempstring));
 
 		name = PRVM_ValueString((etype_t)d->type, (prvm_eval_t *)v);
-
-		if ( !matchpattern(name, prvm_nostrdisp.string, 1) )	// Cataboligne - 016.11.16 - block one result in field data: intended for SUB_Null()
-			continue;
 
 		if (strlen(name) > sizeof(tempstring2)-4)
 		{
