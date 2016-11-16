@@ -48,10 +48,14 @@ cvar_t prvm_reuseedicts_startuptime = {0, "prvm_reuseedicts_startuptime", "2", "
 cvar_t prvm_reuseedicts_neverinsameframe = {0, "prvm_reuseedicts_neverinsameframe", "1", "never allows re-use of freed entity slots during same frame"};
 
 // Cataboligne - 016.11.1 - options for - FREE ents & ents with no search result
+// Cataboligne - 016.11.14 - pattern match on field contents - only display those ent
+// Cataboligne - 016.11.16 - block one result in field data: intended for SUB_Null()
+// Cataboligne - 016.11.16 - display fields with default data - if you want to make sure a field is defined
 cvar_t prvm_nulldisp = {0, "prvm_nulldisp", "0", "when set to: 0 - do not display default entries, 1 - display all fields"};
 cvar_t prvm_nostrdisp = {0, "prvm_nostrdisp", "SUB_Null()", "when set do not display {s} values, null - display all non default values"};
+cvar_t prvm_strmatch = {0, "prvm_strmatch", "", "when set display ents with field data matching {s}, null - display all valid ents"};
 cvar_t prvm_nofreedisp = {0, "prvm_nofreedisp", "0", "when set to: 0 - do not display FREE ents, 1 - display in search list"};
-cvar_t prvm_nosrchdisp = {0, "prvm_nosrchdisp", "0", "when set to: 0 - display no search result ents, 1 - display in search list"};
+cvar_t prvm_nosrchdisp = {0, "prvm_nosrchdisp", "0", "when set to: 0 - do not display no result ents, 1 - display in search list"};
 cvar_t prvm_elshowxyz = {0, "prvm_elshowxyz", "0", "when set to: 0 - display no _x _y _z fields, 1 - display _x _y _z"};
 int	same_ent;  // Cataboligne - 016.11.1 - search more than one field
 
@@ -659,52 +663,21 @@ void PRVM_ED_Print(prvm_edict_t *ed, const char *wildcard_fieldname)
 
 	fnd = 0;						// Cataboligne - 016.11.1 - options for - ents with no search result
 	sent = PRVM_NUM_FOR_EDICT(ed);
-/*
-								// Cataboligne - 016.11.14 - pattern match on field contents - only display those ents
 
-// search wildcard_fieldname for @{search pattern}
-	int fnd2;
-	char tempsearch[MAX_INPUTLINE];
-
-	fnd2 = 0;
-
-	for (i = 1;i < sizeof(wildcard_fieldname);i++)
+	if (prvm_strmatch.string > " ") 
 	{
-		if ( wildcard_fieldname[i] == "@")
+		fnd = 1;
+	        for (i = 1;i < prog->numfielddefs;i++)			// Cataboligne - 016.11.14 - pattern match on field contents - only display those ent
 		{
-// we got a search parm - copy it off, set wildcard & tell test to check it
+			d = &prog->fielddefs[i];
+			v = (int *)(ed->fields.vp + d->ofs);
+			type = d->type & ~DEF_SAVEGLOBAL;
+			ckname = PRVM_ValueString((etype_t)d->type, (prvm_eval_t *)v);
 
-			for (j = i+1; j < sizeof(wildcard_fieldname); j++)
-				tempsearch[j - i] = wildcard_fieldname[j];
-			wildcard_fieldname[i] = 0;
-			fnd2 = 1;
-			break;
+			if ( matchpattern(ckname, prvm_strmatch.string, 1) ) fnd = 0;
 		}
+		if (fnd != 0) return;
 	}
-
-// test all field values for our search parm
-
-	if (fnd2)
-	for (i = 1;i < prog->numfielddefs;i++)
-	{
-		d = &prog->fielddefs[i];
-		v = (int *)(ed->fields.vp + d->ofs);
-                type = d->type & ~DEF_SAVEGLOBAL;
-
-                for (j=0 ; j<prvm_type_size[type] ; j++)
-			if (v[j])
-                                break;
-                if (j == prvm_type_size[type])
-                        continue;
-
-		name = PRVM_ValueString((etype_t)d->type, (prvm_eval_t *)v);
-// matched one - mark it good
-		if( matchpattern(name, tempsearch, 1) )
-			fnd2 = 2;
-	}
-
-*/
-
 
 	tempstring[0] = 0;
 	if (sent != same_ent)					// Cataboligne - 016.11.1 - search more than one field
@@ -743,7 +716,8 @@ void PRVM_ED_Print(prvm_edict_t *ed, const char *wildcard_fieldname)
 		if ( matchpattern(ckname, prvm_nostrdisp.string, 1) )	// Cataboligne - 016.11.16 - block one result in field data: intended for SUB_Null()
 			continue;
 
-		fnd = 1;					// Cataboligne - 016.11.1 - options for - ents with no search result
+		fnd = 1;				// Cataboligne - 016.11.1 - options for - ents with no search result
+
 		if (strlen(name) > sizeof(tempstring2)-4)
 		{
 			memcpy (tempstring2, name, sizeof(tempstring2)-4);
@@ -773,7 +747,6 @@ void PRVM_ED_Print(prvm_edict_t *ed, const char *wildcard_fieldname)
 			tempstring[0] = 0;
 		}
 	}
-//	if (!fnd2 || fnd2 == 2)					// Cataboligne - 016.11.14 - pattern match on field contents - only display those ents
 	if (fnd || prvm_nosrchdisp.integer)			// Cataboligne - 016.11.1 - options for - ents with no search result
 	if (tempstring[0])
 	{
@@ -2784,6 +2757,7 @@ void PRVM_Init (void)
 // Cataboligne - 016.11.1 - options for - FREE ents & ents with no search result
 	Cvar_RegisterVariable (&prvm_nulldisp);
 	Cvar_RegisterVariable (&prvm_nostrdisp);
+	Cvar_RegisterVariable (&prvm_strmatch);
 	Cvar_RegisterVariable (&prvm_nofreedisp);
 	Cvar_RegisterVariable (&prvm_nosrchdisp);
 	Cvar_RegisterVariable (&prvm_elshowxyz);
