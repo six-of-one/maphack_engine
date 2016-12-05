@@ -267,6 +267,18 @@
 				// although mostly unneeded, thanks to the only float being false being 0x0 and 0x80000000 (negative zero)
 				// and entity, string, field values can never have that value
 				{
+				int ic, jc;
+			//		ii = sv.time;
+			//		if ((ii & 3) == 0)
+			//		{
+					jc = jumpcount / 10000;
+					ic = ici / 10000;
+						if (jc > ic)
+						{
+							ici = jumpcount;
+							Con_Printf("*** jumpcounter: %i\n", ici);
+						}
+			//		}
 					prog->xfunction->profile += (st - startst);
 					st = prog->statements + st->jumpabsolute - 1;	// offset the st++
 					startst = st;
