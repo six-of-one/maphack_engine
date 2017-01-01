@@ -198,6 +198,9 @@ cvar_t sv_hide = {0, "sv_hide", "0", "distance from a player beyond which hacks 
 // Cataboligne - 016.1.13 - block out some previous errors and issue a warning instead - mostly connected to qc related fail
 cvar_t sv_prvm_warn = {1, "sv_prvm_warn", "1", "convert select PRVM_ERROR into VM_Warning calls"};
 
+// Number 6 - 017.1.1 - allow various skill exclude (spawnflags 256, 512, 1024, 2048, 1792) to be ignored / shunted to qc
+cvar_t sv_ignskill = {CVAR_SAVE, "sv_ignskill", "0", "mask off entity skill limit flags - bits 1: not easy, 2: not normal, 4: not hard / nightmare, 8: not DM, 16: 1792 only in DM"};
+
 server_t sv;
 server_static_t svs;
 
@@ -607,6 +610,9 @@ void SV_Init (void)
 //#endif
 // Cataboligne - 016.1.13 - block out some previous errors and issue a warning instead - mostly connected to qc related fail
 	Cvar_RegisterVariable (&sv_prvm_warn);
+
+// Number 6 - 017.1.1 - allow various skill exclude (spawnflags 256, 512, 1024, 2048, 1792) to be ignored / shunted to qc
+	Cvar_RegisterVariable (&sv_ignskill);
 
 	sv_mempool = Mem_AllocPool("server", 0, NULL);
 }
@@ -3597,6 +3603,8 @@ static void SV_VM_CB_CountEdicts(void)
 	Con_Printf("step      :%3i\n", step);
 }
 
+// 6 mod - sv_ignskill = "mask off entity skill limit flags - bits 1: not easy, 2: not normal, 4: not hard / nightmare, 8: not DM, 16: 1792 only in DM"};
+
 static qboolean SV_VM_CB_LoadEdict(prvm_edict_t *ent)
 {
 	// remove things from different skill levels or deathmatch
@@ -3604,6 +3612,9 @@ static qboolean SV_VM_CB_LoadEdict(prvm_edict_t *ent)
 	{
 		if (deathmatch.integer)
 		{
+// 6 mod - 017.1.1 - allow skill block flags to be masked off
+			if (sv_ignskill.integer & 8) return true;
+// end 6 mod
 			if (((int)PRVM_serveredictfloat(ent, spawnflags) & SPAWNFLAG_NOT_DEATHMATCH))
 			{
 				return false;
@@ -3613,6 +3624,13 @@ static qboolean SV_VM_CB_LoadEdict(prvm_edict_t *ent)
 			|| (current_skill == 1 && ((int)PRVM_serveredictfloat(ent, spawnflags) & SPAWNFLAG_NOT_MEDIUM))
 			|| (current_skill >= 2 && ((int)PRVM_serveredictfloat(ent, spawnflags) & SPAWNFLAG_NOT_HARD  )))
 		{
+// 6 mod - 017.1.1 - allow skill block flags to be masked off
+// note: 1792 is a special case for an item that only appears in DM - bit 16 allows these items in SP / coop without allowing items masked by 256, 512 or 1024
+			if ((sv_ignskill.integer & 16) && ((int)PRVM_serveredictfloat(ent, spawnflags) == 1792)) return true;
+			if ((sv_ignskill.integer & 1) && (current_skill <= 0)) return true;
+			if ((sv_ignskill.integer & 2) && (current_skill == 1)) return true;
+			if ((sv_ignskill.integer & 4) && (current_skill >= 2)) return true;
+// end 6 mod
 			return false;
 		}
 	}
