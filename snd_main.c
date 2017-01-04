@@ -1043,6 +1043,11 @@ void S_ClearUsed (void)
 		// Precache it if it's not done (and pass false for levelsound because these are permanent)
 		if (ambient_sfxs[i] == NULL)
 			ambient_sfxs[i] = S_PrecacheSound (ambient_names[i], false, false);
+
+// Number Six - 017.1.4 - allow wind & water ambient sounds server control
+		if (sv_sound_water.string && (i == 0)) ambient_sfxs[i] = sv_sound_water.string;
+		if (sv_sound_wind.string && (i == 1)) ambient_sfxs[i] = sv_sound_wind.string;
+
 		if (ambient_sfxs[i] != NULL)
 		{
 			channels[i].sfx = ambient_sfxs[i];

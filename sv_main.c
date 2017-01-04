@@ -137,6 +137,10 @@ cvar_t sv_random_seed = {0, "sv_random_seed", "", "random seed; when set, on eve
 cvar_t sv_ratelimitlocalplayer = {0, "sv_ratelimitlocalplayer", "0", "whether to apply rate limiting to the local player in a listen server (only useful for testing)"};
 cvar_t sv_sound_land = {0, "sv_sound_land", "demon/dland2.wav", "sound to play when MOVETYPE_STEP entity hits the ground at high speed (empty cvar disables the sound)"};
 cvar_t sv_sound_watersplash = {0, "sv_sound_watersplash", "misc/h2ohit1.wav", "sound to play when MOVETYPE_FLY/TOSS/BOUNCE/STEP entity enters or leaves water (empty cvar disables the sound)"};
+// Number Six - 017.1.4 - allow wind & water ambient sounds server control
+cvar_t sv_sound_water = {0, "sv_sound_water", "sound/ambience/water1.wav", "sound played for ambient water effects added by engine - not used in qc (null disables effect)"};
+cvar_t sv_sound_wind = {0, "sv_sound_wind", "sound/ambience/wind2.wav", "sound played for ambient wind effects added by engine - not used in qc (null disables effect)"};
+
 cvar_t sv_stepheight = {CVAR_NOTIFY, "sv_stepheight", "18", "how high you can step up (TW_SV_STEPCONTROL extension)"};
 cvar_t sv_stopspeed = {CVAR_NOTIFY, "sv_stopspeed","100", "how fast you come to a complete stop"};
 cvar_t sv_wallfriction = {CVAR_NOTIFY, "sv_wallfriction", "1", "how much you slow down when sliding along a wall"};
@@ -549,6 +553,10 @@ void SV_Init (void)
 	Cvar_RegisterVariable (&sv_ratelimitlocalplayer);
 	Cvar_RegisterVariable (&sv_sound_land);
 	Cvar_RegisterVariable (&sv_sound_watersplash);
+// Number Six - 017.1.4 - allow wind & water ambient sounds server control
+	Cvar_RegisterVariable (&sv_sound_water);
+	Cvar_RegisterVariable (&sv_sound_wind);
+
 	Cvar_RegisterVariable (&sv_stepheight);
 	Cvar_RegisterVariable (&sv_stopspeed);
 	Cvar_RegisterVariable (&sv_wallfriction);

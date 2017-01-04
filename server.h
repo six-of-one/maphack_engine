@@ -465,6 +465,10 @@ extern cvar_t sv_random_seed;
 extern cvar_t sv_ratelimitlocalplayer;
 extern cvar_t sv_sound_land;
 extern cvar_t sv_sound_watersplash;
+// Number Six - 017.1.4 - allow wind & water ambient sounds server control
+extern cvar_t sv_sound_water;
+extern cvar_t sv_sound_wind;
+
 extern cvar_t sv_stepheight;
 extern cvar_t sv_stopspeed;
 extern cvar_t sv_wallfriction;
