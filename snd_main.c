@@ -236,6 +236,10 @@ static cvar_t snd_startnonloopingsounds = {0, "snd_startnonloopingsounds", "1", 
 static sfx_t* ambient_sfxs [2] = { NULL, NULL };
 static const char* ambient_names [2] = { "sound/ambience/water1.wav", "sound/ambience/wind2.wav" };
 
+// Number Six - 017.1.4 - allow wind & water ambient sounds server control
+cvar_t sv_sound_water = {0, "sv_sound_water", "sound/ambience/water1.wav", "sound played for ambient water effects added by engine - not used in qc (misc/null.wav to silence)"};
+cvar_t sv_sound_wind = {0, "sv_sound_wind", "sound/ambience/wind2.wav", "sound played for ambient wind effects added by engine - not used in qc (misc/null.wav to silence)"};
+
 
 // ====================================================================
 // Functions
@@ -869,6 +873,10 @@ void S_Init(void)
 	Cvar_RegisterVariable(&snd_channellayout);
 	Cvar_RegisterVariable(&snd_soundradius);
 
+// Number Six - 017.1.4 - allow wind & water ambient sounds server control
+	Cvar_RegisterVariable (&sv_sound_water);
+	Cvar_RegisterVariable (&sv_sound_wind);
+
 	Cvar_SetValueQuick(&snd_initialized, true);
 
 	known_sfx = NULL;
@@ -1041,12 +1049,13 @@ void S_ClearUsed (void)
 	for (i = 0; i < sizeof (ambient_sfxs) / sizeof (ambient_sfxs[0]); i++)
 	{
 		// Precache it if it's not done (and pass false for levelsound because these are permanent)
-		if (ambient_sfxs[i] == NULL)
-			ambient_sfxs[i] = S_PrecacheSound (ambient_names[i], false, false);
 
 // Number Six - 017.1.4 - allow wind & water ambient sounds server control
-		if (sv_sound_water.string && (i == 0)) ambient_sfxs[i] = sv_sound_water.string;
-		if (sv_sound_wind.string && (i == 1)) ambient_sfxs[i] = sv_sound_wind.string;
+		if (sv_sound_water.string && (i == 0)) ambient_sfxs[i] = S_PrecacheSound(sv_sound_water.string, false, false);
+		if (sv_sound_wind.string && (i == 1)) ambient_sfxs[i] = S_PrecacheSound(sv_sound_wind.string, false, false);
+
+		if (ambient_sfxs[i] == NULL)
+			ambient_sfxs[i] = S_PrecacheSound (ambient_names[i], false, false);
 
 		if (ambient_sfxs[i] != NULL)
 		{
