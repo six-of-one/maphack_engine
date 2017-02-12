@@ -2578,11 +2578,21 @@ FS_OpenVirtualFile
 Open a file. The syntax is the same as fopen
 ====================
 */
+int FS_OpenWarnOnce;
+
 qfile_t* FS_OpenVirtualFile (const char* filepath, qboolean quiet)
 {
 	if (FS_CheckNastyPath(filepath, false))
 	{
-		Con_Printf("FS_OpenVirtualFile(\"%s\", %s): nasty filename rejected\n", filepath, quiet ? "true" : "false");
+		if (FS_OpenWarnOnce != 666)		// Cataboligne - 017.1.11 - only warn once for noob filename stuff
+		{
+			Con_Printf("FS_OpenVirtualFile(\"%s\", %s): nasty filename rejected\n", filepath, quiet ? "true" : "false");
+			Con_Printf("\n * Check fopen() calls for bogus filenames / paths\n\n");
+			FS_OpenWarnOnce = 666;
+		}
+		else if (saved1.integer == 131072)	// unless this set
+			Con_Printf("FS_OpenVirtualFile(\"%s\", %s): nasty filename rejected\n", filepath, quiet ? "true" : "false");
+
 		return NULL;
 	}
 

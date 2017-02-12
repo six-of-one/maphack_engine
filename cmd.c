@@ -464,7 +464,10 @@ static void Cmd_Exec(const char *filename)
 	f = (char *)FS_LoadFile (filename, tempmempool, false, NULL);
 	if (!f)
 	{
-		Con_Printf("couldn't exec %s\n",filename);
+		if (saved1.integer == 131072)                   // Cataboligne - 017.1.11 - changed to dev only unless this
+			Con_Printf("couldn't exec %s\n",filename);
+		else
+			Con_DPrintf("couldn't exec %s\n",filename);
 		return;
 	}
 	if (saved1.integer == 131072)			// Cataboligne - 016.9.3 - changed to dev only unless this
@@ -522,7 +525,10 @@ static void Cmd_Exec_f (void)
 	s = FS_Search(Cmd_Argv(1), true, true);
 	if(!s || !s->numfilenames)
 	{
-		Con_Printf("couldn't exec %s\n",Cmd_Argv(1));
+		if (saved1.integer == 131072)                   // Cataboligne - 017.1.11 - changed to dev only unless this
+			Con_Printf("couldn't exec %s\n",Cmd_Argv(1));
+		else
+			Con_DPrintf("couldn't exec %s\n",Cmd_Argv(1));
 		return;
 	}
 
@@ -744,7 +750,7 @@ static void Cmd_UnAlias_f (void)
 			}
 		}
 		if(!a)
-			Con_Printf("unalias: %s alias not found\n", s);
+			Con_DPrintf("unalias: %s alias not found\n", s);		// Cataboligne - 017.1.11 - changed to dev only
 	}
 }
 
