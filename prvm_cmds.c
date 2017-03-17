@@ -46,6 +46,8 @@ void VM_Warning(const char *fmt, ...)
 // TODO: move vm_files and vm_fssearchlist back [9/13/2006 Black]
 // TODO: (move vm_files and vm_fssearchlist to prvm_prog_t struct again) [2007-01-23 LordHavoc]
 // TODO: will this war ever end? [2007-01-23 LordHavoc]
+// DONE: Number Six - 017.3.17 - dont error on null string for any requests in this module 		- put in VM_Warning on some of these changes, prob. should warn all of them
+//																	  recoded all null string tests to return a 0 / null string and + or simply not perform the qc requested action
 
 void VM_CheckEmptyString (const char *s)
 {
@@ -664,7 +666,10 @@ void VM_cvar (void)
 	char string[VM_STRINGTEMP_LENGTH];
 	VM_SAFEPARMCOUNTRANGE(1,8,VM_cvar);
 	VM_VarString(0, string, sizeof(string));
-	VM_CheckEmptyString(string);
+//	VM_CheckEmptyString(string);
+// Number Six - 017.3.17 - dont error on null string for some requests
+	if (ISWHITESPACE(string[0])) PRVM_G_FLOAT(OFS_RETURN) = 0;
+	else
 	PRVM_G_FLOAT(OFS_RETURN) = PRVM_Cvar_ReadOk(string) ? Cvar_VariableValue(string) : 0;
 }
 
@@ -689,7 +694,15 @@ void VM_cvar_type (void)
 
 	VM_SAFEPARMCOUNTRANGE(1,8,VM_cvar);
 	VM_VarString(0, string, sizeof(string));
-	VM_CheckEmptyString(string);
+
+//	VM_CheckEmptyString(string);
+// Number Six - 017.3.17 - dont error on null string for some requests
+	if (ISWHITESPACE(string[0]))
+	{
+		PRVM_G_FLOAT(OFS_RETURN) = 0;
+		return; // CVAR_TYPE_NONE
+	}
+
 	cvar = Cvar_FindVar(string);
 
 
@@ -726,7 +739,10 @@ void VM_cvar_string(void)
 	char string[VM_STRINGTEMP_LENGTH];
 	VM_SAFEPARMCOUNTRANGE(1,8,VM_cvar_string);
 	VM_VarString(0, string, sizeof(string));
-	VM_CheckEmptyString(string);
+//	VM_CheckEmptyString(string);
+// Number Six - 017.3.17 - dont error on null string for some requests
+	if (ISWHITESPACE(string[0])) PRVM_G_INT(OFS_RETURN) = OFS_NULL;
+	else
 	PRVM_G_INT(OFS_RETURN) = PRVM_SetTempString(PRVM_Cvar_ReadOk(string) ? Cvar_VariableString(string) : "");
 }
 
@@ -743,7 +759,10 @@ void VM_cvar_defstring (void)
 	char string[VM_STRINGTEMP_LENGTH];
 	VM_SAFEPARMCOUNTRANGE(1,8,VM_cvar_defstring);
 	VM_VarString(0, string, sizeof(string));
-	VM_CheckEmptyString(string);
+//	VM_CheckEmptyString(string);
+// Number Six - 017.3.17 - dont error on null string for some requests
+	if (ISWHITESPACE(string[0])) PRVM_G_INT(OFS_RETURN) = OFS_NULL;
+	else
 	PRVM_G_INT(OFS_RETURN) = PRVM_SetTempString(Cvar_VariableDefString(string));
 }
 
@@ -759,7 +778,10 @@ void VM_cvar_description (void)
 	char string[VM_STRINGTEMP_LENGTH];
 	VM_SAFEPARMCOUNTRANGE(1,8,VM_cvar_description);
 	VM_VarString(0, string, sizeof(string));
-	VM_CheckEmptyString(string);
+//	VM_CheckEmptyString(string);
+// Number Six - 017.3.17 - dont error on null string for some requests
+	if (ISWHITESPACE(string[0])) PRVM_G_INT(OFS_RETURN) = OFS_NULL;
+	else
 	PRVM_G_INT(OFS_RETURN) = PRVM_SetTempString(Cvar_VariableDescription(string));
 }
 /*
@@ -776,7 +798,9 @@ void VM_cvar_set (void)
 	VM_SAFEPARMCOUNTRANGE(2,8,VM_cvar_set);
 	VM_VarString(1, string, sizeof(string));
 	name = PRVM_G_STRING(OFS_PARM0);
-	VM_CheckEmptyString(name);
+//	VM_CheckEmptyString(name);
+// Number Six - 017.3.17 - dont error on null string for some requests
+	if (!ISWHITESPACE(name[0]))
 	Cvar_Set(name, string);
 }
 
@@ -3131,7 +3155,14 @@ void VM_search_begin(void)
 
 	pattern = PRVM_G_STRING(OFS_PARM0);
 
-	VM_CheckEmptyString(pattern);
+//	VM_CheckEmptyString(pattern);
+// Number Six - 017.3.17 - dont error on null string for some requests
+	if (ISWHITESPACE(pattern[0]))
+	{
+		VM_Warning("VM_search_begin: null search: %s \n",pattern);
+		PRVM_G_FLOAT(OFS_RETURN) = -1;
+		return;
+	}
 
 	caseinsens = (int)PRVM_G_FLOAT(OFS_PARM1);
 	quiet = (int)PRVM_G_FLOAT(OFS_PARM2);
@@ -3310,7 +3341,10 @@ void VM_precache_pic(void)
 
 	s = PRVM_G_STRING(OFS_PARM0);
 	PRVM_G_INT(OFS_RETURN) = PRVM_G_INT(OFS_PARM0);
-	VM_CheckEmptyString (s);
+//	VM_CheckEmptyString (s);
+// Number Six - 017.3.17 - dont error on null string for some requests
+	if (ISWHITESPACE(s[0])) PRVM_G_INT(OFS_RETURN) = OFS_NULL;
+	else
 
 	// AK Draw_CachePic is supposed to always return a valid pointer
 	if( Draw_CachePic_Flags(s, 0)->tex == r_texture_notexture )
@@ -3331,8 +3365,9 @@ void VM_freepic(void)
 	VM_SAFEPARMCOUNT(1,VM_freepic);
 
 	s = PRVM_G_STRING(OFS_PARM0);
-	VM_CheckEmptyString (s);
-
+//	VM_CheckEmptyString (s);
+// Number Six - 017.3.17 - dont error on null string for some requests
+	if (!ISWHITESPACE(s[0]))
 	Draw_FreePic(s);
 }
 
@@ -3758,7 +3793,14 @@ void VM_drawpic(void)
 	VM_SAFEPARMCOUNT(6,VM_drawpic);
 
 	picname = PRVM_G_STRING(OFS_PARM1);
-	VM_CheckEmptyString (picname);
+//	VM_CheckEmptyString (picname);
+// Number Six - 017.3.17 - dont error on null string for some requests
+	if (ISWHITESPACE(picname[0]))
+	{
+		PRVM_G_FLOAT(OFS_RETURN) = -4;
+		VM_Warning("VM_drawpic: %s: %s empty string\n", PRVM_NAME, picname);
+		return;
+	}
 
 	// is pic cached ? no function yet for that
 	if(!1)
@@ -3802,7 +3844,14 @@ void VM_drawrotpic(void)
 	VM_SAFEPARMCOUNT(8,VM_drawrotpic);
 
 	picname = PRVM_G_STRING(OFS_PARM1);
-	VM_CheckEmptyString (picname);
+//	VM_CheckEmptyString (picname);
+// Number Six - 017.3.17 - dont error on null string for some requests
+	if (ISWHITESPACE(picname[0]))
+	{
+		PRVM_G_FLOAT(OFS_RETURN) = -4;
+		VM_Warning("VM_drawrotpic: %s: %s empty string\n", PRVM_NAME, picname);
+		return;
+	}
 
 	// is pic cached ? no function yet for that
 	if(!1)
@@ -3848,7 +3897,14 @@ void VM_drawsubpic(void)
 	VM_SAFEPARMCOUNT(8,VM_drawsubpic);
 
 	picname = PRVM_G_STRING(OFS_PARM2);
-	VM_CheckEmptyString (picname);
+//	VM_CheckEmptyString (picname);
+// Number Six - 017.3.17 - dont error on null string for some requests
+	if (ISWHITESPACE(picname[0]))
+	{
+		PRVM_G_FLOAT(OFS_RETURN) = -4;
+		VM_Warning("VM_drawsubpic: %s: %s empty string\n", PRVM_NAME, picname);
+		return;
+	}
 
 	// is pic cached ? no function yet for that
 	if(!1)
@@ -3969,7 +4025,16 @@ void VM_getimagesize(void)
 	VM_SAFEPARMCOUNT(1,VM_getimagesize);
 
 	p = PRVM_G_STRING(OFS_PARM0);
-	VM_CheckEmptyString (p);
+//	VM_CheckEmptyString (p);
+// Number Six - 017.3.17 - dont error on null string for some requests
+	if (ISWHITESPACE(p[0]))
+	{
+		VM_Warning("VM_getimagesize: %s: %s empty string\n", PRVM_NAME, p);
+		PRVM_G_VECTOR(OFS_RETURN)[0] = 0;
+		PRVM_G_VECTOR(OFS_RETURN)[1] = 0;
+		PRVM_G_VECTOR(OFS_RETURN)[2] = 0;
+		return;
+	}
 
 	pic = Draw_CachePic_Flags (p, CACHEPICFLAG_NOTPERSISTENT);
 
@@ -4019,7 +4084,9 @@ void VM_findkeysforcommand(void)
 	else
 		bindmap = 0; // consistent to "bind"
 
-	VM_CheckEmptyString(cmd);
+//	VM_CheckEmptyString(cmd);
+// Number Six - 017.3.17 - dont error on null string for some requests
+	if (ISWHITESPACE(cmd[0])) PRVM_G_INT(OFS_RETURN) = PRVM_SetTempString("");
 
 	Key_FindKeysForCommand(cmd, keys, FKFC_NUMKEYS, bindmap);
 
@@ -4136,8 +4203,23 @@ void VM_cin_open( void )
 	file = PRVM_G_STRING( OFS_PARM0 );
 	name = PRVM_G_STRING( OFS_PARM1 );
 
-	VM_CheckEmptyString( file );
-    VM_CheckEmptyString( name );
+//	VM_CheckEmptyString( file );
+//    VM_CheckEmptyString( name );
+
+// Number Six - 017.3.17 - dont error on null string for some requests
+	if (ISWHITESPACE(file[0]))
+	{
+		VM_Warning("VM_cin_open: %s: %s empty string\n", PRVM_NAME, file);
+		PRVM_G_FLOAT(OFS_RETURN) = 0;
+		return;
+	}
+	if (ISWHITESPACE(name[0]))
+	{
+		VM_Warning("VM_cin_open: %s: %s empty string\n", PRVM_NAME, name);
+		PRVM_G_FLOAT(OFS_RETURN) = 0;
+		return;
+	}
+
 
 	if( CL_OpenVideo( file, name, MENUOWNER, "" ) )
 		PRVM_G_FLOAT( OFS_RETURN ) = 1;
@@ -4159,7 +4241,9 @@ void VM_cin_close( void )
 	VM_SAFEPARMCOUNT( 1, VM_cin_close );
 
 	name = PRVM_G_STRING( OFS_PARM0 );
-	VM_CheckEmptyString( name );
+//	VM_CheckEmptyString( name );
+// Number Six - 017.3.17 - dont error on null string for some requests
+	if (!ISWHITESPACE(name[0]))
 
 	CL_CloseVideo( CL_GetVideoByName( name ) );
 }
@@ -4179,7 +4263,9 @@ void VM_cin_setstate( void )
 	VM_SAFEPARMCOUNT( 2, VM_cin_netstate );
 
 	name = PRVM_G_STRING( OFS_PARM0 );
-	VM_CheckEmptyString( name );
+//	VM_CheckEmptyString( name );
+// Number Six - 017.3.17 - dont error on null string for some requests
+	if (ISWHITESPACE(name[0])) return;
 
 	state = (clvideostate_t)((int)PRVM_G_FLOAT( OFS_PARM1 ));
 
@@ -4203,7 +4289,14 @@ void VM_cin_getstate( void )
 	VM_SAFEPARMCOUNT( 1, VM_cin_getstate );
 
 	name = PRVM_G_STRING( OFS_PARM0 );
-	VM_CheckEmptyString( name );
+//	VM_CheckEmptyString( name );
+// Number Six - 017.3.17 - dont error on null string for some requests
+	if (ISWHITESPACE(name[0]))
+	{
+		VM_Warning("VM_cin_getstate: %s: %s empty string\n", PRVM_NAME, name);
+		PRVM_G_FLOAT( OFS_RETURN ) = 0;
+		return;
+	}
 
 	video = CL_GetVideoByName( name );
 	if( video )
@@ -4227,7 +4320,9 @@ void VM_cin_restart( void )
 	VM_SAFEPARMCOUNT( 1, VM_cin_restart );
 
 	name = PRVM_G_STRING( OFS_PARM0 );
-	VM_CheckEmptyString( name );
+//	VM_CheckEmptyString( name );
+// Number Six - 017.3.17 - dont error on null string for some requests
+	if (ISWHITESPACE(name[0])) return;
 
 	video = CL_GetVideoByName( name );
 	if( video )
@@ -4275,7 +4370,13 @@ void VM_gecko_create( void ) {
 	VM_SAFEPARMCOUNT( 1, VM_gecko_create );
 
 	name = PRVM_G_STRING( OFS_PARM0 );
-	VM_CheckEmptyString( name );
+//	VM_CheckEmptyString( name );
+// Number Six - 017.3.17 - dont error on null string for some requests
+	if (ISWHITESPACE(name[0]))
+	{
+		VM_Warning("VM_gecko_create: %s: %s empty string\n", PRVM_NAME, name);
+		return;
+	}
 
 	// find an empty slot for this gecko browser..
 	for( i = 0 ; i < PRVM_MAX_GECKOINSTANCES ; i++ ) {
@@ -4312,7 +4413,10 @@ void VM_gecko_destroy( void ) {
 	VM_SAFEPARMCOUNT( 1, VM_gecko_destroy );
 
 	name = PRVM_G_STRING( OFS_PARM0 );
-	VM_CheckEmptyString( name );
+//	VM_CheckEmptyString( name );
+// Number Six - 017.3.17 - dont error on null string for some requests
+	if (ISWHITESPACE(name[0])) return;
+
 	instance = CL_Gecko_FindBrowser( name );
 	if( !instance ) {
 		return;
@@ -4336,8 +4440,11 @@ void VM_gecko_navigate( void ) {
 
 	name = PRVM_G_STRING( OFS_PARM0 );
 	URI = PRVM_G_STRING( OFS_PARM1 );
-	VM_CheckEmptyString( name );
-	VM_CheckEmptyString( URI );
+//	VM_CheckEmptyString( name );
+//	VM_CheckEmptyString( URI );
+// Number Six - 017.3.17 - dont error on null string for some requests
+	if (ISWHITESPACE(name[0])) return;
+	if (ISWHITESPACE(URI[0])) return;
 
    instance = CL_Gecko_FindBrowser( name );
 	if( !instance ) {
@@ -4362,7 +4469,15 @@ void VM_gecko_keyevent( void ) {
 	VM_SAFEPARMCOUNT( 3, VM_gecko_keyevent );
 
 	name = PRVM_G_STRING( OFS_PARM0 );
-	VM_CheckEmptyString( name );
+//	VM_CheckEmptyString( name );
+// Number Six - 017.3.17 - dont error on null string for some requests
+	if (ISWHITESPACE(name[0]))
+	{
+		VM_Warning("VM_gecko_keyevent: %s: %s empty string\n", PRVM_NAME, name);
+		PRVM_G_FLOAT( OFS_RETURN ) = 0;
+		return;
+	}
+
 	key = (unsigned int) PRVM_G_FLOAT( OFS_PARM1 );
 	switch( (unsigned int) PRVM_G_FLOAT( OFS_PARM2 ) ) {
 	case 0:
@@ -4407,7 +4522,10 @@ void VM_gecko_movemouse( void ) {
 	VM_SAFEPARMCOUNT( 3, VM_gecko_movemouse );
 
 	name = PRVM_G_STRING( OFS_PARM0 );
-	VM_CheckEmptyString( name );
+//	VM_CheckEmptyString( name );
+// Number Six - 017.3.17 - dont error on null string for some requests
+	if (ISWHITESPACE(name[0])) return;
+
 	x = PRVM_G_FLOAT( OFS_PARM1 );
 	y = PRVM_G_FLOAT( OFS_PARM2 );
 	
@@ -4434,7 +4552,10 @@ void VM_gecko_resize( void ) {
 	VM_SAFEPARMCOUNT( 3, VM_gecko_movemouse );
 
 	name = PRVM_G_STRING( OFS_PARM0 );
-	VM_CheckEmptyString( name );
+//	VM_CheckEmptyString( name );
+// Number Six - 017.3.17 - dont error on null string for some requests
+	if (ISWHITESPACE(name[0])) return;
+
 	w = PRVM_G_FLOAT( OFS_PARM1 );
 	h = PRVM_G_FLOAT( OFS_PARM2 );
 	
@@ -4460,7 +4581,9 @@ void VM_gecko_get_texture_extent( void ) {
 	VM_SAFEPARMCOUNT( 1, VM_gecko_movemouse );
 
 	name = PRVM_G_STRING( OFS_PARM0 );
-	VM_CheckEmptyString( name );
+//	VM_CheckEmptyString( name );
+// Number Six - 017.3.17 - dont error on null string for some requests
+	if (ISWHITESPACE(name[0])) return;
 	
 	PRVM_G_VECTOR(OFS_RETURN)[2] = 0;
 	instance = CL_Gecko_FindBrowser( name );
@@ -6151,7 +6274,13 @@ void VM_callfunction(void)
 
 	s = PRVM_G_STRING(OFS_PARM0+(prog->argc - 1)*3);
 
-	VM_CheckEmptyString(s);
+//	VM_CheckEmptyString(s);
+// Number Six - 017.3.17 - dont error on null string for some requests
+	if (ISWHITESPACE(s[0]))
+	{
+		VM_Warning("VM_callfunciton: null value: %s", s);
+		return;
+	}
 
 	func = PRVM_ED_FindFunction(s);
 
@@ -6202,7 +6331,13 @@ void VM_isfunction(void)
 
 	s = PRVM_G_STRING(OFS_PARM0);
 
-	VM_CheckEmptyString(s);
+//	VM_CheckEmptyString(s);
+// Number Six - 017.3.17 - dont error on null string for some requests
+	if (ISWHITESPACE(s[0]))
+	{
+		VM_Warning("VM_isfunciton: null value: %s", s);
+		return;
+	}
 
 	func = PRVM_ED_FindFunction(s);
 
