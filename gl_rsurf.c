@@ -1522,12 +1522,14 @@ void R_Q1BSP_DrawLight(entity_render_t *ent, int numsurfaces, const int *surface
 	R_FrameData_ReturnToMark();
 }
 
+// Cataboligne - 017.11.23 - provide ability to change tex on bsp models (poss even mdl models)
+
 //Made by [515]
 void R_ReplaceWorldTexture (void)
 {
 	dp_model_t		*m;
 	texture_t	*t;
-	int			i;
+	int			i, mptr;
 	const char	*r, *newt;
 	skinframe_t *skinframe;
 	if (!r_refdef.scene.worldmodel)
@@ -1539,7 +1541,7 @@ void R_ReplaceWorldTexture (void)
 
 	if(Cmd_Argc() < 2)
 	{
-		Con_Print("r_replacemaptexture <texname> <newtexname> - replaces texture\n");
+		Con_Print("r_replacemaptexture <texname> <newtexname> [ <entnum> ] - replaces texture [ for entnum ]\n");
 		Con_Print("r_replacemaptexture <texname> - switch back to default texture\n");
 		return;
 	}
@@ -1550,6 +1552,12 @@ void R_ReplaceWorldTexture (void)
 	}
 	r = Cmd_Argv(1);
 	newt = Cmd_Argv(2);
+
+// Cataboligne - 017.11.23 - pick a new ent
+	mptr = atoi(Cmd_Argv(3));
+	if (mptr > 0 && mptr < r_refdef.scene.numentities) m = r_refdef.scene.entities[mptr];
+// Cataboligne - 017.11.23 - end mod
+
 	if(!newt[0])
 		newt = r;
 	for(i=0,t=m->data_textures;i<m->num_textures;i++,t++)
