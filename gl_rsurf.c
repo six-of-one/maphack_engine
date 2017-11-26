@@ -1555,7 +1555,7 @@ void R_ReplaceWorldTexture (void)
 
 // Cataboligne - 017.11.23 - pick a new ent
 	mptr = atoi(Cmd_Argv(3));
-	if (mptr > 0 && mptr < r_refdef.scene.numentities) m = r_refdef.scene.entities[mptr];
+	if (mptr > 0 && mptr < r_refdef.scene.numentities) m = r_refdef.scene.entities[mptr]->model;
 // Cataboligne - 017.11.23 - end mod
 
 	if(!newt[0])
