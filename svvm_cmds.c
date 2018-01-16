@@ -2101,6 +2101,19 @@ static void VM_SV_te_explosion (void)
 	SV_FlushBroadcastMessages();
 }
 
+// #458 		- Number Six - 018.1.15 - allow for a silent or custom sound explosion
+static void VM_SV_te_explosionsilent (void)
+{
+	VM_SAFEPARMCOUNT(1, VM_SV_te_explosionsilent);
+	MSG_WriteByte(&sv.datagram, svc_temp_entity);
+	MSG_WriteByte(&sv.datagram, TE_EXPLOSIONSILENT);
+	// origin
+	MSG_WriteCoord(&sv.datagram, PRVM_G_VECTOR(OFS_PARM0)[0], sv.protocol);
+	MSG_WriteCoord(&sv.datagram, PRVM_G_VECTOR(OFS_PARM0)[1], sv.protocol);
+	MSG_WriteCoord(&sv.datagram, PRVM_G_VECTOR(OFS_PARM0)[2], sv.protocol);
+	SV_FlushBroadcastMessages();
+}
+
 static void VM_SV_te_tarexplosion (void)
 {
 	VM_SAFEPARMCOUNT(1, VM_SV_te_tarexplosion);
@@ -3598,7 +3611,7 @@ VM_SV_spawnclient,				// #454 entity() spawnclient (DP_SV_BOTCLIENT)
 VM_SV_clienttype,				// #455 float(entity clent) clienttype (DP_SV_BOTCLIENT)
 VM_SV_WriteUnterminatedString,	// #456 void(float to, string s) WriteUnterminatedString (DP_SV_WRITEUNTERMINATEDSTRING)
 VM_SV_te_flamejet,				// #457 void(vector org, vector vel, float howmany) te_flamejet = #457 (DP_TE_FLAMEJET)
-NULL,							// #458
+VM_SV_te_explosionsilent,							// #458 void(vector org) te_explosionsilent (DP_TE_STANDARDEFFECTBUILTINS)		- Number Six - 018.1.15
 VM_ftoe,						// #459 entity(float num) entitybyindex (DP_QC_EDICT_NUM)
 VM_buf_create,					// #460 float() buf_create (DP_QC_STRINGBUFFERS)
 VM_buf_del,						// #461 void(float bufhandle) buf_del (DP_QC_STRINGBUFFERS)

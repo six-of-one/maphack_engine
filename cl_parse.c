@@ -2716,6 +2716,15 @@ void CL_ParseTempEntity(void)
 			S_StartSound(-1, 0, cl.sfx_r_exp3, pos, 1, 1);
 			break;
 
+// Number Six - 018.1.15 - allow for a silent or custom sound explosion
+		case TE_EXPLOSIONSILENT:
+			// rocket explosion
+			MSG_ReadVector(pos, cls.protocol);
+			CL_FindNonSolidLocation(pos, pos, 10);
+			CL_ParticleEffect(EFFECT_TE_EXPLOSION, 1, pos, pos, vec3_origin, vec3_origin, NULL, 0);
+//			S_StartSound(-1, 0, cl.sfx_r_exp3, pos, 1, 1);
+			break;
+
 		case TE_EXPLOSIONQUAD:
 			// quad rocket explosion
 			MSG_ReadVector(pos, cls.protocol);

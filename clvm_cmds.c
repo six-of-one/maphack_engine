@@ -1970,6 +1970,20 @@ static void VM_CL_te_explosion (void)
 	S_StartSound(-1, 0, cl.sfx_r_exp3, pos2, 1, 1);
 }
 
+// #458 void(vector org) te_explosionsilent (DP_TE_STANDARDEFFECTBUILTINS)		- Number Six - 018.1.15 - allow for a silent or custom sound explosion
+static void VM_CL_te_explosionsilent (void)
+{
+	float		*pos;
+	vec3_t		pos2;
+	VM_SAFEPARMCOUNT(1, VM_CL_te_explosionsilent);
+
+	pos = PRVM_G_VECTOR(OFS_PARM0);
+	CL_FindNonSolidLocation(pos, pos2, 10);
+	CL_ParticleEffect(EFFECT_TE_EXPLOSION, 1, pos2, pos2, vec3_origin, vec3_origin, NULL, 0);
+//	S_StartSound(-1, 0, cl.sfx_r_exp3, pos2, 1, 1);
+}
+
+
 // #422 void(vector org) te_tarexplosion (DP_TE_STANDARDEFFECTBUILTINS)
 static void VM_CL_te_tarexplosion (void)
 {
@@ -4510,7 +4524,7 @@ NULL,							// #454 entity() spawnclient (DP_SV_BOTCLIENT)
 NULL,							// #455 float(entity clent) clienttype (DP_SV_BOTCLIENT)
 NULL,							// #456 void(float to, string s) WriteUnterminatedString (DP_SV_WRITEUNTERMINATEDSTRING)
 VM_CL_te_flamejet,				// #457 void(vector org, vector vel, float howmany) te_flamejet (DP_TE_FLAMEJET)
-NULL,							// #458
+VM_CL_te_explosionsilent,							// #458 void(vector org) te_explosionsilent (DP_TE_STANDARDEFFECTBUILTINS)		- Number Six - 018.1.15 - allow for a silent or custom sound explosion
 VM_ftoe,						// #459 entity(float num) entitybyindex (DP_QC_EDICT_NUM)
 VM_buf_create,					// #460 float() buf_create (DP_QC_STRINGBUFFERS)
 VM_buf_del,						// #461 void(float bufhandle) buf_del (DP_QC_STRINGBUFFERS)

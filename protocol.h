@@ -311,6 +311,9 @@ void Protocol_Names(char *buffer, size_t buffersize);
 #define TE_GUNSHOTQUAD		57 // [vector] origin
 #define TE_SPIKEQUAD		58 // [vector] origin
 #define TE_SUPERSPIKEQUAD	59 // [vector] origin
+// Number Six - 018.1.15 - allow for a silent or custom sound explosion
+#define	TE_EXPLOSIONSILENT		60 // [vector] origin
+
 // LordHavoc: block2 - 70-80
 #define TE_EXPLOSIONQUAD	70 // [vector] origin
 #define	TE_UNUSED1			71 // unused
