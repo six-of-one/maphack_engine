@@ -2420,6 +2420,10 @@ SV_CheckWaterTransition
 
 =============
 */
+
+// dont splash sound if this bit set in flags
+#define	FL_NOWATERSPLASH	4194304
+
 void SV_CheckWaterTransition (prvm_edict_t *ent)
 {
 	int cont;
@@ -2439,7 +2443,7 @@ void SV_CheckWaterTransition (prvm_edict_t *ent)
 	if( !SV_CheckContentsTransition(ent, cont) )
 	{ // Contents Transition Function Invalid; Potentially Play Water Sound
 		// check if the entity crossed into or out of water
-		if (sv_sound_watersplash.string && ((PRVM_serveredictfloat(ent, watertype) == CONTENTS_WATER || PRVM_serveredictfloat(ent, watertype) == CONTENTS_SLIME) != (cont == CONTENTS_WATER || cont == CONTENTS_SLIME)))
+		if (sv_sound_watersplash.string && ((PRVM_serveredictfloat(ent, watertype) == CONTENTS_WATER || PRVM_serveredictfloat(ent, watertype) == CONTENTS_SLIME) != (cont == CONTENTS_WATER || cont == CONTENTS_SLIME)) && !((int)PRVM_serveredictfloat(ent, flags) & FL_NOWATERSPLASH))
 			SV_StartSound (ent, 0, sv_sound_watersplash.string, 255, 1);
 	}
 
