@@ -877,6 +877,7 @@ void SVVM_ExecuteProgram (func_t fnum, const char *errormessage)
 	{
 		if (PRVM_allglobaledict(self))
 			PRVM_ED_Print(PRVM_PROG_TO_EDICT(PRVM_allglobaledict(self)), NULL);
+	  if (strcmp(errormessage, "QC function self.think is missing"))
 		PRVM_ERROR ("SVVM_ExecuteProgram: %s", errormessage);
 	}
 
